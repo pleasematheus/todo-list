@@ -57,7 +57,10 @@ const menuConfig = {
 
 const Navigator = () => {
 	return (
-		<View>
+		<View style={{
+			justifyContent: 'center',
+			alignItems: 'center',
+		}}>
 			<Text>
 				Teste
 			</Text>
