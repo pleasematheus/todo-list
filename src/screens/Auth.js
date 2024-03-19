@@ -9,6 +9,8 @@ import {
 } from 'react-native'
 
 import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { CommonActions } from '@react-navigation/native'
 
 import backgroundImage from '../../assets/imgs/login.jpg'
 import commonStyles from '../commonStyles'
@@ -31,7 +33,7 @@ export default class Auth extends Component {
 		if (this.state.stageNew) {
 			this.signup()
 		} else {
-			Alert.alert('Sucesso', 'Logar')
+			this.signin()
 		}
 	}
 
@@ -46,6 +48,29 @@ export default class Auth extends Component {
 
 			showSucess('Usuário cadastrado!')
 			this.setState({...initialState})
+		} catch (e) {
+			showError(e)
+		}
+	}
+
+	signin = async () => {
+		try {
+			const res = await axios.post(`${server}/signin`, {
+				email: this.state.email,
+				password: this.state.password
+			})
+
+			axios.defaults.headers.common['Authorization'] = `bearer ${res.data.token}`
+			// this.props.navigation.navigate('Home', res.data)
+			this.props.navigation.dispatch(
+				CommonActions.reset({
+					index: 0,
+					routes: [{
+						name: 'Home',
+						params: res.data
+					}]
+				})
+			)
 		} catch (e) {
 			showError(e)
 		}
