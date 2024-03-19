@@ -20,8 +20,8 @@ import { server, showError, showSucess } from '../common'
 
 const initialState = {
 	name: '',
-	email: '',
-	password: '',
+	email: 'teste@teste.com',
+	password: 'teste123',
 	confirmPassword: '',
 	stageNew: false
 }
@@ -82,7 +82,7 @@ export default class Auth extends Component {
     validations.push(this.state.password && this.state.password.length >= 8)
 
     if (this.state.stageNew) {
-      validations.push(this.state.name && this.name.name.trim().length >= 3)
+      validations.push(this.state.name && this.state.name.trim().length >= 3)
       validations.push(this.state.password === this.state.confirmPassword)
     }
 
