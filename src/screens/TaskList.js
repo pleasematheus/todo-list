@@ -16,7 +16,7 @@ import axios from 'axios'
 import moment from 'moment'
 import 'moment/locale/pt-br'
 
-import {server, showError} from '../common'
+import { server, showError } from '../common'
 import commonStyles from '../commonStyles'
 import todayImage from '../../assets/imgs/today.jpg'
 import Task from '../components/Task'
@@ -44,16 +44,17 @@ export default class TaskList extends Component {
 
 	loadTasks = async () => {
 		try {
-			const maxDate = moment().format('YYYY-MM-DD 23:59:59')
+			const maxDate = moment()
+				.format('YYYY-MM-DD 23:59:59')
 			const res = await axios.get(`${server}/tasks?date=${maxDate}`)
-			this.setState({tasks: res.data}, this.filterTasks)
+			this.setState({ tasks: res.data }, this.filterTasks)
 		} catch (e) {
 			showError(e)
 		}
 	}
 
 	toggleFilter = () => {
-		this.setState({showDoneTasks: !this.state.showDoneTasks}, this.filterTasks)
+		this.setState({ showDoneTasks: !this.state.showDoneTasks }, this.filterTasks)
 	}
 
 	filterTasks = () => {
@@ -71,37 +72,40 @@ export default class TaskList extends Component {
 		}))
 	}
 
-	onToggleTask = taskId => {
-		const tasks = [...this.state.tasks]
-		tasks.forEach(task => {
-			if (task.id === taskId) {
-				task.doneAt = task.doneAt ? null : new Date()
-			}
-		})
-
-		this.setState({ tasks }, this.filterTasks)
+	toggleTask = async taskId => {
+		try {
+			await axios.put(`${server}/tasks/${taskId}/toggle/`)
+			this.loadTasks()
+		} catch (e) {
+			showError(e)
+		}
 	}
 
-	addTask = newTask => {
+	addTask = async newTask => {
 		if (!newTask.desc || !newTask.desc.trim()) {
 			Alert.alert("Dados inválidos", "Descrição não informada!")
 			return
 		}
 
-		const tasks = [...this.state.tasks]
-		tasks.push({
-			id: Math.random(),
-			desc: newTask.desc,
-			estimateAt: newTask.date,
-			doneAt: null
-		})
+		try {
+			await axios.post(`${server}/tasks`, {
+				desc: newTask.desc,
+				estimateAt: newTask.date
+			})
 
-		this.setState({tasks, showAddTask: false}, this.filterTasks)
+			this.setState({ showAddTask: false }, this.loadTasks)
+		} catch (e) {
+			showError(e)
+		}
 	}
 
-	deleteTask = id => {
-		const tasks = this.state.tasks.filter(task => task.id !== id)
-		this.setState({ tasks }, this.filterTasks)
+	deleteTask = async taskId => {
+		try {
+			await axios.delete(`${server}/tasks/${taskId}`)
+			this.loadTasks()
+		} catch (e) {
+			showError(e)
+		}
 	}
 
 	render() {
@@ -129,20 +133,20 @@ export default class TaskList extends Component {
 					</View>
 					<View style={styles.titleBar}>
 						<Text style={styles.title}>Hoje</Text>
-						<Text style={styles.subtitle}>{ today }</Text>
+						<Text style={styles.subtitle}>{today}</Text>
 					</View>
 				</ImageBackground>
 				<View style={styles.taskList}>
 					<FlatList
 						data={this.state.visibleTasks}
 						keyExtractor={item => `${item.id}`}
-						renderItem={({ item }) => <Task {...item} onToggleTask={this.onToggleTask} onDelete={this.deleteTask}/>}
+						renderItem={({ item }) => <Task {...item} onToggleTask={this.toggleTask} onDelete={this.deleteTask} />}
 					/>
 				</View>
 				<TouchableOpacity
 					style={styles.addButton}
 					activeOpacity={0.7}
-					onPress={()=> this.setState({showAddTask: true})}
+					onPress={() => this.setState({ showAddTask: true })}
 				>
 					<Icon
 						name="plus"
