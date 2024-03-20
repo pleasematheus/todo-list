@@ -18,7 +18,12 @@ import 'moment/locale/pt-br'
 
 import { server, showError } from '../common'
 import commonStyles from '../commonStyles'
+
 import todayImage from '../../assets/imgs/today.jpg'
+import tomorrowImage from '../../assets/imgs/tomorrow.jpg'
+import weekImage from '../../assets/imgs/week.jpg'
+import monthImage from '../../assets/imgs/month.jpg'
+
 import Task from '../components/Task'
 import AddTask from './AddTask'
 
@@ -109,6 +114,24 @@ export default class TaskList extends Component {
 		}
 	}
 
+	getImage = () => {
+		switch (this.props.daysAhead) {
+			case 0: return todayImage
+			case 1: return tomorrowImage
+			case 7: return weekImage
+			default: return monthImage
+		}
+	}
+
+	getColor = () => {
+		switch (this.props.daysAhead) {
+			case 0: return commonStyles.colors.today
+			case 1: return commonStyles.colors.tomorrow
+			case 7: return commonStyles.colors.week
+			default: return commonStyles.colors.month
+		}
+	}
+
 	render() {
 		const today = moment().locale('pt-br').format('ddd, D [de] MMMM')
 
@@ -118,8 +141,7 @@ export default class TaskList extends Component {
 					isVisible={this.state.showAddTask}
 					onCancel={() => this.setState({ showAddTask: false })}
 					onSave={this.addTask}/>
-				<ImageBackground
-					source={todayImage}
+				<ImageBackground source={this.getImage()}
 					style={styles.background}>
 					<View style={styles.iconBar}>
 						<TouchableOpacity onPress={() => this.props.navigation.openDrawer()}>
@@ -143,8 +165,10 @@ export default class TaskList extends Component {
 						keyExtractor={item => `${item.id}`}
 						renderItem={({ item }) => <Task {...item} onToggleTask={this.toggleTask} onDelete={this.deleteTask} />}/>
 				</View>
-				<TouchableOpacity
-					style={styles.addButton}
+				<TouchableOpacity style={[
+					styles.addButton,
+					{ backgroundColor: this.getColor()
+					}]}
 					activeOpacity={0.7}
 					onPress={() => this.setState({ showAddTask: true })}>
 					<Icon
@@ -198,7 +222,6 @@ const styles = StyleSheet.create({
 		width: 50,
 		height: 50,
 		borderRadius: 25,
-		backgroundColor: commonStyles.colors.today,
 		justifyContent: 'center',
 		alignItems: 'center',
 	}
