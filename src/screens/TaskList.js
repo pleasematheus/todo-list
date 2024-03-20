@@ -45,6 +45,7 @@ export default class TaskList extends Component {
 	loadTasks = async () => {
 		try {
 			const maxDate = moment()
+				.add({days: this.props.dayAhead})
 				.format('YYYY-MM-DD 23:59:59')
 			const res = await axios.get(`${server}/tasks?date=${maxDate}`)
 			this.setState({ tasks: res.data }, this.filterTasks)
@@ -116,23 +117,23 @@ export default class TaskList extends Component {
 				<AddTask
 					isVisible={this.state.showAddTask}
 					onCancel={() => this.setState({ showAddTask: false })}
-					onSave={this.addTask}
-				/>
+					onSave={this.addTask}/>
 				<ImageBackground
 					source={todayImage}
-					style={styles.background}
-				>
+					style={styles.background}>
 					<View style={styles.iconBar}>
+						<TouchableOpacity onPress={() => this.props.navigation.openDrawer()}>
+							<Icon name='bars' size={20} color={commonStyles.colors.secondary}/>
+						</TouchableOpacity>
 						<TouchableOpacity onPress={this.toggleFilter}>
 							<Icon
 								name={this.state.showDoneTasks ? 'eye' : 'eye-slash'}
 								size={20}
-								color={commonStyles.colors.secondary}
-							/>
+								color={commonStyles.colors.secondary}/>
 						</TouchableOpacity>
 					</View>
 					<View style={styles.titleBar}>
-						<Text style={styles.title}>Hoje</Text>
+						<Text style={styles.title}>{this.props.title}</Text>
 						<Text style={styles.subtitle}>{today}</Text>
 					</View>
 				</ImageBackground>
@@ -140,19 +141,16 @@ export default class TaskList extends Component {
 					<FlatList
 						data={this.state.visibleTasks}
 						keyExtractor={item => `${item.id}`}
-						renderItem={({ item }) => <Task {...item} onToggleTask={this.toggleTask} onDelete={this.deleteTask} />}
-					/>
+						renderItem={({ item }) => <Task {...item} onToggleTask={this.toggleTask} onDelete={this.deleteTask} />}/>
 				</View>
 				<TouchableOpacity
 					style={styles.addButton}
 					activeOpacity={0.7}
-					onPress={() => this.setState({ showAddTask: true })}
-				>
+					onPress={() => this.setState({ showAddTask: true })}>
 					<Icon
 						name="plus"
 						size={20}
-						color={commonStyles.colors.secondary}
-					/>
+						color={commonStyles.colors.secondary}/>
 				</TouchableOpacity>
 			</View>
 		)
@@ -188,8 +186,9 @@ const styles = StyleSheet.create({
 		marginLeft: 20
 	},
 	iconBar: {
-		flexDirection: 'row-reverse',
+		flexDirection: 'row',
 		marginHorizontal: 20,
+		justifyContent: 'space-between',
 		marginTop: Platform.OS === 'ios' ? 40 : 10
 	},
 	addButton: {
