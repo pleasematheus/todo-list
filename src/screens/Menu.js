@@ -19,7 +19,7 @@ export default props => {
 				index: 0,
 				routes: [
 					{
-						name: 'Auth',
+						name: 'Auth'
 					}
 				]
 			})
