@@ -16,14 +16,13 @@ import axios from 'axios'
 import moment from 'moment'
 import 'moment/locale/pt-br'
 
-import { server, showError } from '../common'
-import commonStyles from '../commonStyles'
-
 import todayImage from '../../assets/imgs/today.jpg'
 import tomorrowImage from '../../assets/imgs/tomorrow.jpg'
 import weekImage from '../../assets/imgs/week.jpg'
 import monthImage from '../../assets/imgs/month.jpg'
 
+import { server, showError } from '../common'
+import commonStyles from '../commonStyles'
 import Task from '../components/Task'
 import AddTask from './AddTask'
 
@@ -35,7 +34,9 @@ const initialState = {
 }
 
 export default class TaskList extends Component {
-	state = { ...initialState }
+	state = {
+		...initialState
+	}
 
 	componentDidMount = async () => {
 		const stateString = await AsyncStorage.getItem("tasksState")
@@ -134,24 +135,21 @@ export default class TaskList extends Component {
 
 	render() {
 		const today = moment().locale('pt-br').format('ddd, D [de] MMMM')
-
 		return (
 			<View style={styles.container}>
-				<AddTask
-					isVisible={this.state.showAddTask}
+				<AddTask isVisible={this.state.showAddTask}
 					onCancel={() => this.setState({ showAddTask: false })}
 					onSave={this.addTask}/>
 				<ImageBackground source={this.getImage()}
 					style={styles.background}>
 					<View style={styles.iconBar}>
 						<TouchableOpacity onPress={() => this.props.navigation.openDrawer()}>
-							<Icon name='bars' size={20} color={commonStyles.colors.secondary}/>
+							<Icon name='bars'
+								size={20} color={commonStyles.colors.secondary} />
 						</TouchableOpacity>
 						<TouchableOpacity onPress={this.toggleFilter}>
-							<Icon
-								name={this.state.showDoneTasks ? 'eye' : 'eye-slash'}
-								size={20}
-								color={commonStyles.colors.secondary}/>
+							<Icon	name={this.state.showDoneTasks ? 'eye' : 'eye-slash'}
+								size={20} color={commonStyles.colors.secondary}/>
 						</TouchableOpacity>
 					</View>
 					<View style={styles.titleBar}>
@@ -160,8 +158,7 @@ export default class TaskList extends Component {
 					</View>
 				</ImageBackground>
 				<View style={styles.taskList}>
-					<FlatList
-						data={this.state.visibleTasks}
+					<FlatList	data={this.state.visibleTasks}
 						keyExtractor={item => `${item.id}`}
 						renderItem={({ item }) => <Task {...item} onToggleTask={this.toggleTask} onDelete={this.deleteTask} />}/>
 				</View>
@@ -171,9 +168,7 @@ export default class TaskList extends Component {
 					}]}
 					activeOpacity={0.7}
 					onPress={() => this.setState({ showAddTask: true })}>
-					<Icon
-						name="plus"
-						size={20}
+					<Icon name="plus"	size={20}
 						color={commonStyles.colors.secondary}/>
 				</TouchableOpacity>
 			</View>
