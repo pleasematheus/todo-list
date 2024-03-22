@@ -6,10 +6,9 @@ import { createDrawerNavigator } from '@react-navigation/drawer'
 import Auth from './screens/Auth'
 import TaskList from './screens/TaskList'
 
-// import AuthOrApp from './screens/AuthOrApp'
+import AuthOrApp from './screens/AuthOrApp'
 import Menu from './screens/Menu'
 import commonStyles from './commonStyles'
-import { View, Text } from 'react-native'
 
 const Stack = createStackNavigator()
 const Drawer = createDrawerNavigator()
@@ -45,29 +44,21 @@ const DrawerNavigator = props => {
 	)
 }
 
-// const AuthNavigator = () => {
-// 	return (
-// 		<Stack.Navigator screenOptions={{ headerShown: false }}>
-// 			{/* <Stack.Screen name="AuthOrApp" component={AuthOrApp} /> */}
-// 			<Stack.Screen name="Auth" component={Auth} />
-// 			{/* <Stack.Screen name="Home" component={DrawerNavigator} /> */}
-// 		</Stack.Navigator>
-// 	)
-// }
+const AuthNavigator = () => {
+	return (
+		<Stack.Navigator screenOptions={{ headerShown: false }}>
+			<Stack.Screen name="AuthOrApp" component={AuthOrApp} />
+			<Stack.Screen name="Auth" component={Auth} />
+			<Stack.Screen name="Home" component={DrawerNavigator} />
+		</Stack.Navigator>
+	)
+}
 
 const Navigator = () => {
 	return (
-		<View style={{
-			justifyContent: 'center',
-			alignItems: 'center',
-		}}>
-			<Text>
-				Teste
-			</Text>
-		</View>
-		// <NavigationContainer>
-		// 	<AuthNavigator />
-		// </NavigationContainer>
+		<NavigationContainer>
+			<AuthNavigator />
+		</NavigationContainer>
 	)
 }
 
