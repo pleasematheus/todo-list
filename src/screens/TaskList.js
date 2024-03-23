@@ -81,7 +81,7 @@ export default class TaskList extends Component {
 
 	toggleTask = async taskId => {
 		try {
-			await axios.put(`${server}/tasks/${taskId}/toggle/`)
+			await axios.put(`${server}/tasks/${taskId}/toggle`)
 			this.loadTasks()
 		} catch (e) {
 			showError(e)
