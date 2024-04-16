@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
 		color: '#FFF',
 		fontSize: 20,
 		textAlign: 'center',
-		marginBottom: 10
+		marginBottom: 9
 	},
 	formContainer: {
 		backgroundColor: 'rgba(0, 0, 0, 0.8)',
@@ -181,6 +181,6 @@ const styles = StyleSheet.create({
 	buttonText: {
 		fontFamily: commonStyles.fontFamily,
 		color: '#FFF',
-		fontSize: 20
+		fontSize: 19
 	}
 })
